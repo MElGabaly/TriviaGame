@@ -4,7 +4,9 @@
 // Counters
 var correctanswer = 0;
 var wronganswer = 0;
-var unanswered =0;
+var unanswered = 0;
+var downloadTimer;
+var clockRunning = false;
 
 // Options and Answers
 
@@ -51,31 +53,38 @@ $(document).ready(function () {
 
         }
 
+        clearInterval(downloadTimer)
+        clockRunning = false;
         $('.GameQuestion').hide()
         $('.results').show()
         $('#answers-right').html("Number of Correct Answers = " + correctanswer)
         $('#answers-wrong').html("Number of Wrong Answers = " + wronganswer)
         $('#unanswered').html("Number of unanswered questions = " + unanswered)
-        
+
     }
 
     // start button
     function start() {
         $('.start').hide()
         $('.GameQuestion').show()
-        setTimeout(endgame, 25000)
-
-        // timer 
-        var timeleft = 25;
-        var downloadTimer = setInterval(function () {
-            $('#display').html(timeleft + " seconds remaining") 
-            console.log(timeleft + " seconds remaining")
-            timeleft -= 1;
-            if (timeleft < 0) {
-                clearInterval(downloadTimer);
-            }
-        }, 1000);
+        if (!clockRunning) {
+            downloadTimer = setInterval(count, 1000);
+            clockRunning = true;
+          }
     }
+
+    // timer 
+    var timeleft = 25;
+    function count() {
+        $('#display').html(timeleft + " seconds remaining")
+        console.log(timeleft + " seconds remaining")
+        timeleft -= 1;
+        if (timeleft < 0) {
+            clearInterval(downloadTimer);
+            endgame()
+        }
+    }
+
 
     //restart
     function restart() {
